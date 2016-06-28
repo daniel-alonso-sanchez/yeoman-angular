@@ -6,14 +6,60 @@
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($timeout, webDevTec, toastr) {
+  function MainController($timeout, webDevTec, toastr,  $scope) {
     var vm = this;
 
     vm.awesomeThings = [];
     vm.classAnimation = '';
     vm.creationDate = 1467025200204;
-    vm.showToastr = showToastr;
+    /**
+    form schema
+    **/
+    vm.schema = {
+      "type": "object",
+"properties": {
+  "subforms": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "nick": { "type": "string" },
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+    };
+    vm.form = [
+      "*",      
+        {
+          type: "submit",
+          title: "Save"
+        }
+      ];
+    vm.model = {};
+    vm.onSubmit = function(form) {
+        // First we broadcast an event so all fields validate themselves
 
+        $scope.$broadcast('schemaFormValidate');
+
+        // Then we check if the form is valid
+        if (form.$valid) {
+          window.alert('valid');
+        }else{
+          window.alert('not valid');
+        }
+      }
+    /**
+    end
+    form schema
+    **/
     activate();
 
     function activate() {
@@ -23,10 +69,7 @@
       }, 4000);
     }
 
-    function showToastr() {
-      toastr.info('Fork <a href="https://github.com/Swiip/generator-gulp-angular" target="_blank"><b>generator-gulp-angular</b></a>');
-      vm.classAnimation = '';
-    }
+
 
     function getWebDevTec() {
       vm.awesomeThings = webDevTec.getTec();
